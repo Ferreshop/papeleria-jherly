@@ -1089,12 +1089,20 @@ function detectType(text){
 // Extract several service requests from one message.
 // Example: "100 copias blanco y negro y 2 engargolados de 80 hojas y 10 enmicados carta"
 function parseRequests(text){
-  const normalized=text
+  let normalized=text
     .replace(/,/g,' y ')
     .replace(/\s+/g,' ')
     .trim();
 
-  const chunks=normalized.split(/\s+y\s+|;|\n/i).map(x=>x.trim()).filter(Boolean);
+  // Evita cortar "blanco y negro" como si fueran dos servicios distintos.
+  // Ejemplo correcto: "50 copias blanco y negro" = un solo servicio.
+  normalized=normalized.replace(/blanco\s+y\s+negro/gi,'blanco_y_negro');
+
+  const chunks=normalized
+    .split(/\s+y\s+|;|\n/i)
+    .map(x=>x.replace(/blanco_y_negro/gi,'blanco y negro').trim())
+    .filter(Boolean);
+
   const requests=[];
   let lastQty=null;
 
@@ -1103,44 +1111,45 @@ function parseRequests(text){
     if(!type) continue;
 
     const nums=[...chunk.matchAll(/\b(\d{1,6})\b/g)].map(m=>+m[1]);
-
     let qty=null;
 
     if(nums.length){
       qty=nums[0];
 
       // Para frases como "2 engargolados de 80 hojas",
-      // se toma el último número como cantidad de hojas.
+      // se usa el último número como cantidad de hojas.
       if(type==='bind' && nums.length>1) qty=nums[nums.length-1];
 
       lastQty=qty;
     }else if(type==='bind' && lastQty){
-      // Si escribe: "50 copias blanco y negro y engargolado",
-      // se entiende que el engargolado es para esas mismas 50 hojas.
+      // "50 copias blanco y negro y engargolado"
+      // = 50 copias + engargolado para esas mismas 50 hojas.
       qty=lastQty;
-    }else if(lastQty){
-      // También permite reutilizar la cantidad anterior si el usuario
-      // agrega otro servicio sin repetir el número.
-      qty=lastQty;
+    }else{
+      // No reutilizamos automáticamente la cantidad para otro servicio
+      // si no está claro, para evitar duplicados accidentales.
+      continue;
     }
 
-    if(qty) requests.push({type,qty,source:chunk});
+    // Evita duplicar exactamente el mismo servicio y cantidad
+    // dentro de un mismo mensaje.
+    const duplicate=requests.some(r=>r.type===type && r.qty===qty);
+    if(!duplicate) requests.push({type,qty,source:chunk});
   }
 
-  // Caso especial: "50 copias blanco y negro y engargolado"
-  // Si el texto contiene engargolado sin número propio, se usa la cantidad
-  // de copias detectada en la misma frase.
-  if(/engarg/.test(normalized) && !requests.some(r=>r.type==='bind')){
-    const firstNum=normalized.match(/\b(\d{1,6})\b/);
+  const restored=normalized.replace(/blanco_y_negro/gi,'blanco y negro');
+
+  if(/engarg/.test(restored) && !requests.some(r=>r.type==='bind')){
+    const firstNum=restored.match(/\b(\d{1,6})\b/);
     if(firstNum){
       requests.push({type:'bind',qty:+firstNum[1],source:'engargolado'});
     }
   }
 
   if(!requests.length){
-    const type=detectType(normalized);
-    const m=normalized.match(/\b(\d{1,6})\b/);
-    if(type && m) requests.push({type,qty:+m[1],source:normalized});
+    const type=detectType(restored);
+    const m=restored.match(/\b(\d{1,6})\b/);
+    if(type && m) requests.push({type,qty:+m[1],source:restored});
   }
 
   return requests;
@@ -1392,9 +1401,6 @@ document.querySelectorAll('[data-chat-sample]').forEach(el=>{
    style="position:fixed;right:18px;bottom:18px;z-index:999;background:#25D366;color:white;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;text-decoration:none;font-size:28px;box-shadow:0 10px 28px rgba(0,0,0,.22)">
   💬
 </a>
-
-</body>
-</html>
 
 </body>
 </html>
