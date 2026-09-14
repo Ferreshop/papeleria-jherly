@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Papelería Jherly | Inicio</title>
+<title>Papelería Jherly | Cotizador inteligente y pedidos</title>
 <meta name="theme-color" content="#ff4f98">
 <style>
 :root{
@@ -432,6 +432,73 @@ footer{
   </section>
 </main>
 
+
+<section id="promociones" style="padding:56px 18px;background:#fff8fb">
+  <div style="max-width:1120px;margin:auto">
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="font-size:.82rem;font-weight:800;letter-spacing:.12em;color:#d63384;text-transform:uppercase">Promociones</div>
+      <h2 style="margin:7px 0 8px;font-size:clamp(1.8rem,4vw,2.7rem)">Todo para imprimir, estudiar y crear</h2>
+      <p style="margin:0 auto;max-width:720px;color:#665b6d">Cotiza tus impresiones, agrega acabados y envía tu pedido completo por WhatsApp.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+      <div style="background:linear-gradient(135deg,#ff5a9d,#ff8abb);color:white;border-radius:22px;padding:22px">
+        <div style="font-size:34px">🖨️</div>
+        <h3>Impresiones por volumen</h3>
+        <p>Precios escalonados en blanco y negro, color escolar y color full.</p>
+        <a href="#cotizador" style="display:inline-block;margin-top:8px;color:white;font-weight:800">Cotizar ahora →</a>
+      </div>
+      <div style="background:linear-gradient(135deg,#6b5cff,#8d83ff);color:white;border-radius:22px;padding:22px">
+        <div style="font-size:34px">📚</div>
+        <h3>Engargolados</h3>
+        <p>Agrega el engargolado al mismo pedido y el sistema suma todo automáticamente.</p>
+        <a href="#cotizador" style="display:inline-block;margin-top:8px;color:white;font-weight:800">Agregar servicio →</a>
+      </div>
+      <div style="background:linear-gradient(135deg,#00a884,#36c9a8);color:white;border-radius:22px;padding:22px">
+        <div style="font-size:34px">📲</div>
+        <h3>Pedido por WhatsApp</h3>
+        <p>Envía el resumen de tus servicios y el total estimado directamente a Papelería Jherly.</p>
+        <a href="https://wa.me/529641091387" target="_blank" style="display:inline-block;margin-top:8px;color:white;font-weight:800">Abrir WhatsApp →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="archivo" style="padding:56px 18px;background:white">
+  <div style="max-width:1120px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:center">
+    <div>
+      <div style="font-size:.82rem;font-weight:800;letter-spacing:.12em;color:#d63384;text-transform:uppercase">Tu archivo</div>
+      <h2 style="font-size:clamp(1.8rem,4vw,2.6rem);margin:8px 0 12px">Prepara tu pedido antes de enviarlo</h2>
+      <p style="color:#665b6d;line-height:1.7">Selecciona tu PDF para que el nombre del archivo quede anotado en el pedido. Por seguridad del navegador, el archivo no se adjunta solo a WhatsApp: después de abrir el chat, toca el clip 📎 y adjúntalo.</p>
+      <div style="margin-top:18px;padding:16px;border:2px dashed #ffc0da;border-radius:18px;background:#fff8fb">
+        <label for="pdfFile" style="display:block;font-weight:800;margin-bottom:8px">📄 Seleccionar PDF</label>
+        <input id="pdfFile" type="file" accept=".pdf,application/pdf" style="width:100%">
+        <div id="pdfName" style="margin-top:10px;color:#7c6571;font-size:.92rem">Ningún archivo seleccionado.</div>
+      </div>
+    </div>
+    <div style="background:#171322;color:white;border-radius:26px;padding:26px">
+      <div style="font-size:40px">🤖</div>
+      <h3 style="font-size:1.5rem;margin:10px 0">Asistente inteligente Jherly</h3>
+      <p style="color:#d2cbd8;line-height:1.65">Puedes escribir varios servicios en una sola frase. Ejemplo:</p>
+      <div style="background:#2a2436;border-radius:16px;padding:15px;line-height:1.55">
+        “50 copias blanco y negro y engargolado”
+      </div>
+      <p style="color:#d2cbd8;line-height:1.65;margin-bottom:0">El asistente suma los servicios, muestra el total y permite borrar cualquier artículo si el cliente se equivoca.</p>
+    </div>
+  </div>
+</section>
+
+<section id="catalogo" style="padding:56px 18px;background:#f7f8ff">
+  <div style="max-width:1120px;margin:auto;text-align:center">
+    <div style="font-size:.82rem;font-weight:800;letter-spacing:.12em;color:#6b5cff;text-transform:uppercase">Catálogo</div>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.6rem);margin:8px 0 12px">Útiles y productos de Papelería Jherly</h2>
+    <p style="color:#665b6d;max-width:700px;margin:0 auto 22px">Consulta productos escolares y de oficina en el catálogo en línea.</p>
+    <a href="https://papeleriajherly.sicarx.shop" target="_blank"
+       style="display:inline-block;background:#171322;color:white;text-decoration:none;padding:13px 20px;border-radius:14px;font-weight:800">
+      🛍️ Ver catálogo SICAR
+    </a>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <b>Papelería Jherly</b><br>
@@ -465,6 +532,7 @@ const messages=document.getElementById('messages');
 const chatInput=document.getElementById('chatInput');
 
 let cart=[];
+let selectedPdfName='';
 
 function unit(type,qty){
   for(const [max,p] of tables[type]||[]) if(qty<=max) return p;
@@ -569,6 +637,7 @@ function cartSummaryText(){
   const lines=['Hola, quiero cotizar este pedido en Papelería Jherly:',''];
   const customer=document.getElementById('customer').value.trim();
   if(customer) lines.push(`Cliente: ${customer}`,'');
+  if(selectedPdfName) lines.push(`Archivo PDF: ${selectedPdfName}`,'');
   cart.forEach((item,i)=>{
     lines.push(`${i+1}. ${names[item.type]} — ${item.detail}: ${money(item.total)}`);
   });
@@ -731,6 +800,16 @@ document.getElementById('addManual').onclick=()=>{
   addMsg(`✅ Agregué <b>${names[s.value]}</b> al pedido.<br>${r.detail}<br><b>Total acumulado: ${money(cartTotal())}</b>`);
 };
 
+
+const pdfFile=document.getElementById('pdfFile');
+if(pdfFile){
+  pdfFile.addEventListener('change',()=>{
+    selectedPdfName=pdfFile.files && pdfFile.files[0] ? pdfFile.files[0].name : '';
+    const label=document.getElementById('pdfName');
+    if(label) label.textContent=selectedPdfName ? `Archivo seleccionado: ${selectedPdfName}` : 'Ningún archivo seleccionado.';
+  });
+}
+
 // WhatsApp now sends the whole accumulated cart.
 // If the cart is empty, it sends the current visual calculator item.
 document.getElementById('sendBtn').onclick=()=>{
@@ -746,6 +825,7 @@ document.getElementById('sendBtn').onclick=()=>{
   const lines=[
     'Hola, quiero cotizar este pedido en Papelería Jherly:',
     customer?`Cliente: ${customer}`:'',
+    selectedPdfName?`Archivo PDF: ${selectedPdfName}`:'',
     `${names[s.value]} — ${r.detail}`,
     `TOTAL ESTIMADO: ${money(r.total)}`,
     '',
@@ -757,5 +837,11 @@ document.getElementById('sendBtn').onclick=()=>{
 
 update();
 </script>
+
+<a href="https://wa.me/529641091387" target="_blank" aria-label="Abrir WhatsApp"
+   style="position:fixed;right:18px;bottom:18px;z-index:999;background:#25D366;color:white;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;text-decoration:none;font-size:28px;box-shadow:0 10px 28px rgba(0,0,0,.22)">
+  💬
+</a>
+
 </body>
 </html>
