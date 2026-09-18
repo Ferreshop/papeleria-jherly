@@ -1,10 +1,6 @@
 {
   "name": "papeleria-jherly-pdf-analyzer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "dependencies": {
-    "pdfjs-dist": "^4.10.38",
-    "@napi-rs/canvas": "^0.1.68"
-  },
   "type": "module"
 }
