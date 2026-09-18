@@ -1,4 +1,8 @@
-const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.mjs');
+let pdfjsLib;
+async function getPdfJs(){
+  if(!pdfjsLib) pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  return pdfjsLib;
+}
 const { createCanvas } = require('@napi-rs/canvas');
 
 export const config = { api: { bodyParser: false } };
