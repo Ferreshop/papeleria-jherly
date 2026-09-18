@@ -1329,8 +1329,23 @@ function applyPrintInstructions(details,instruction){
   const set=(nums,type)=>nums.forEach(n=>{if(pages[n-1]){pages[n-1].type=type;pages[n-1].customerOverride=true;}});
   const bn=s=>/(blanco\s*(y|&)\s*negro|b\/?n|\bbn\b|escala de grises)/.test(s);
   const color=s=>/\bcolor\b/.test(s);
-  if(!t)return {pages,used:false,note:'Clasificación automática.'};
-  if(/\b(todo|todas)\b/.test(t)){if(bn(t)){set(all,'bn');return {pages,used:true,note:'Todo B/N por indicación del cliente.'}} if(color(t)){set(all,'school');return {pages,used:true,note:'Todo a color por indicación del cliente.'}}}
+  if(!t)return {pages,used:false,note:'Sin indicación de color: se cotiza B/N por defecto. Escribe “A color” o indica páginas específicas si corresponde.'};
+
+  // Instrucciones simples para todo el documento. La indicación del cliente tiene prioridad.
+  if(/^(?:todo|todas|todo el documento|todas las paginas)?\s*(?:a|en)?\s*color(?:\s+escolar)?[.!]?$/.test(t)){
+    set(all,'school');
+    return {pages,used:true,note:'Todo a color por indicación del cliente.'};
+  }
+  if(/^(?:todo|todas|todo el documento|todas las paginas)?\s*(?:a|en)?\s*(?:blanco\s*(?:y|&)\s*negro|b\/?n|bn|escala de grises)[.!]?$/.test(t)){
+    set(all,'bn');
+    return {pages,used:true,note:'Todo B/N por indicación del cliente.'};
+  }
+  if(/^(?:todo|todas|todo el documento|todas las paginas)?\s*(?:a|en)?\s*(?:color\s*full|full\s*color|full)[.!]?$/.test(t)){
+    set(all,'full');
+    return {pages,used:true,note:'Todo Color Full por indicación del cliente.'};
+  }
+
+  if(/\b(todo|todas)\b/.test(t)){if(bn(t)){set(all,'bn');return {pages,used:true,note:'Todo B/N por indicación del cliente.'}} if(/color\s*full|full\s*color/.test(t)){set(all,'full');return {pages,used:true,note:'Todo Color Full por indicación del cliente.'}} if(color(t)){set(all,'school');return {pages,used:true,note:'Todo a color por indicación del cliente.'}}}
   if(/primera pagina|portada/.test(t)){const s=(t.match(/(?:primera pagina|portada)[^,.]*/)||[''])[0]; if(color(s))set([1],'school'); else if(bn(s))set([1],'bn');}
   if(/ultima pagina|contraportada/.test(t)){const s=(t.match(/(?:ultima pagina|contraportada)[^,.]*/)||[''])[0]; if(color(s))set([pages.length],'school'); else if(bn(s))set([pages.length],'bn');}
   for(const seg of t.split(/\s+y\s+|;|\./)){
@@ -1346,7 +1361,7 @@ function applyPrintInstructions(details,instruction){
     if(bn(s))set(all.filter(n=>!fixed.has(n)),'bn'); else if(color(s))set(all.filter(n=>!fixed.has(n)),'school');
   }
   const used=pages.some(p=>p.customerOverride);
-  return {pages,used,note:used?'Se aplicaron las instrucciones del cliente sobre la detección automática.':'No se identificó una instrucción de páginas; se usó la detección automática.'};
+  return {pages,used,note:used?'Se aplicaron las instrucciones del cliente.':'No se identificó la instrucción; se mantuvo la clasificación B/N por defecto.'};
 }
 function effectiveCounts(pages){const c={bn:0,school:0,full:0};pages.forEach(p=>c[p.type]++);return c;}
 
